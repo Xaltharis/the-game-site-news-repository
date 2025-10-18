@@ -1,0 +1,47 @@
+<div class="comment {% if comment.is_reply %}comment-reply{% endif %}" id="comment-{{ comment.id }}">
+    <div class="comment-header">
+        <strong class="comment-author">{{ comment.author.username }}</strong>
+        <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+    </div>
+    
+    <div class="comment-content">
+        {{ comment.content|linebreaks }}
+    </div>
+    
+    <div class="comment-actions">
+        {% if user.is_authenticated and not comment.is_reply %}
+        <button class="btn-reply" onclick="showReplyForm({{ comment.id }})">Ответить</button>
+        {% endif %}
+        
+        {% if comment.author == user %}
+        <form method="post" action="{% url 'news:delete_comment' comment.id %}" class="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="btn-delete" onclick="return confirm('Удалить комментарий?')">Удалить</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- Форма для ответа (скрыта по умолчанию) -->
+    {% if user.is_authenticated and not comment.is_reply %}
+    <div class="reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+        <form method="post" class="comment-form">
+            {% csrf_token %}
+            <input type="hidden" name="parent" value="{{ comment.id }}">
+            <div class="form-group">
+                <textarea name="content" rows="3" placeholder="Введите ваш ответ..." class="comment-textarea"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить ответ</button>
+            <button type="button" class="btn btn-secondary" onclick="hideReplyForm({{ comment.id }})">Отмена</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Ответы на комментарий -->
+    {% if comment.get_replies %}
+    <div class="comment-replies">
+        {% for reply in comment.get_replies %}
+            {% include 'news/comment.html' with comment=reply %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>

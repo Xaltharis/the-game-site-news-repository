@@ -1,0 +1,62 @@
+{% extends 'news/base.html' %}
+
+{% block title %}Статьи с тегом "{{ tag.name }}"{% endblock %}
+
+{% block content %}
+<div class="tag-header">
+    <h2>Статьи с тегом: <span class="tag" style="background-color: {{ tag.color }}">{{ tag.name }}</span></h2>
+    <a href="{% url 'news:article_list' %}" class="back-link">← Все статьи</a>
+</div>
+
+<div class="content-with-sidebar">
+    <div class="main-content">
+        {% for article in articles %}
+        <article class="article-preview">
+            <h3><a href="{% url 'news:article_detail' article.slug %}">{{ article.title }}</a></h3>
+            <div class="article-meta">
+                <span class="date">{{ article.created_at|date:"d.m.Y" }}</span>
+                <span class="author">Автор: {{ article.author.username }}</span>
+                <span class="views">👁 {{ article.views }}</span>
+                <span class="comments-count">💬 {{ article.get_comments_count }}</span>
+            </div>
+            
+            <div class="article-tags">
+                {% for tag in article.tags.all %}
+                <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">
+                    {{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+            
+            {% with first_block=article.blocks.first %}
+                {% if first_block.block_type == 'text' %}
+                    <p>{{ first_block.content|truncatewords:30 }}</p>
+                {% elif first_block.block_type == 'image' and first_block.image %}
+                    <img src="{{ first_block.image.url }}" alt="{{ first_block.image_caption }}" class="preview-image">
+                {% endif %}
+            {% endwith %}
+            
+            <a href="{% url 'news:article_detail' article.slug %}" class="read-more">Читать далее</a>
+        </article>
+        {% empty %}
+        <div class="no-articles">
+            <p>Нет статей с этим тегом.</p>
+            <a href="{% url 'news:article_list' %}" class="back-link">← Вернуться ко всем статьям</a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <aside class="sidebar">
+        <div class="tags-cloud">
+            <h3>Все теги</h3>
+            <div class="tags-list">
+                {% for tag in all_tags %}
+                <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">
+                    {{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'news/base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<div class="content-with-sidebar">
+    <div class="main-content">
+        <article class="news-article">
+            <!-- Заголовок и мета-информация -->
+            <header class="article-header">
+                <h1>{{ article.title }}</h1>
+                <div class="article-meta">
+                    <span class="date">{{ article.created_at|date:"d.m.Y H:i" }}</span>
+                    <span class="author">Автор: {{ article.author.username }}</span>
+                    <span class="views">👁 {{ article.views }}</span>
+                    <span class="comments-count">💬 {{ article.get_comments_count }}</span>
+                </div>
+                
+                <div class="article-tags">
+                    {% for tag in article.tags.all %}
+                    <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">
+                        {{ tag.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </header>
+
+            <!-- Содержимое статьи -->
+            <section class="article-content">
+                {% for block in article.blocks.all %}
+                    {% if block.block_type == 'text' %}
+                        <div class="text-block">
+                            {{ block.content|linebreaks }}
+                        </div>
+                    
+                    {% elif block.block_type == 'image' and block.image %}
+                        <div class="image-block">
+                            <img src="{{ block.image.url }}" alt="{{ block.image_caption }}" class="article-image">
+                            {% if block.image_caption %}
+                                <p class="image-caption">{{ block.image_caption }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </section>
+        </article>
+
+        <!-- Секция комментариев -->
+        <section class="comments-section">
+            <h3>Комментарии ({{ article.get_comments_count }})</h3>
+            
+            {% if article.comments_enabled %}
+                <!-- Форма добавления комментария -->
+                {% if user.is_authenticated %}
+                <div class="comment-form">
+                    <h4>Добавить комментарий</h4>
+                    <form method="post" class="comment-form">
+                        {% csrf_token %}
+                        {{ comment_form.parent }}
+                        <div class="form-group">
+                            {{ comment_form.content }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить комментарий</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="auth-required">
+                    <p>Для добавления комментария <a href="{% url 'admin:login' %}">войдите</a> в систему.</p>
+                </div>
+                {% endif %}
+
+                <!-- Список комментариев -->
+                <div class="comments-list">
+                    {% for comment in comments %}
+                        {% include 'news/comment.html' with comment=comment %}
+                    {% empty %}
+                    <p class="no-comments">Пока нет комментариев. Будьте первым!</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="comments-disabled">
+                    <p>Комментарии к этой статье отключены.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Популярные статьи -->
+        {% if popular_articles %}
+        <div class="popular-articles">
+            <h3>Самые читаемые</h3>
+            <div class="popular-list">
+                {% for popular in popular_articles %}
+                <div class="popular-item">
+                    <a href="{% url 'news:article_detail' popular.slug %}">{{ popular.title }}</a>
+                    <span class="views">👁 {{ popular.views }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="article-actions">
+            <a href="{% url 'news:article_list' %}" class="back-link">← Назад к списку статей</a>
+        </div>
+    </div>
+    
+    <!-- Боковая панель -->
+    <aside class="sidebar">
+        <div class="tags-cloud">
+            <h3>Все теги</h3>
+            <div class="tags-list">
+                {% for tag in all_tags %}
+                <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">
+                    {{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+<script>
+function showReplyForm(commentId) {
+    document.getElementById('reply-form-' + commentId).style.display = 'block';
+}
+
+function hideReplyForm(commentId) {
+    document.getElementById('reply-form-' + commentId).style.display = 'none';
+}
+
+// Прокрутка к комментарию после отправки
+if (window.location.hash) {
+    const commentElement = document.getElementById(window.location.hash.substring(1));
+    if (commentElement) {
+        commentElement.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+</script>
