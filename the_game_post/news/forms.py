@@ -7,12 +7,18 @@ class CommentForm(forms.ModelForm):
         fields = ['content', 'parent']
         widgets = {
             'content': forms.Textarea(attrs={
-                'rows': 4,
+                'rows': 3,
                 'placeholder': 'Введите ваш комментарий...',
                 'class': 'comment-textarea'
             }),
-            'parent': forms.HiddenInput()
+            'parent': forms.HiddenInput(attrs={
+                'class': 'parent-input'
+            })
         }
         labels = {
             'content': ''
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['parent'].required = False

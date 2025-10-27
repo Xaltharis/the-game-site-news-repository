@@ -1,6 +1,11 @@
 <div class="comment {% if comment.is_reply %}comment-reply{% endif %}" id="comment-{{ comment.id }}">
     <div class="comment-header">
-        <strong class="comment-author">{{ comment.author.username }}</strong>
+        <div class="comment-author-info">
+            <strong class="comment-author">{{ comment.author.username }}</strong>
+            {% if comment.is_reply %}
+            <span class="reply-to">→ ответ для {{ comment.parent.author.username }}</span>
+            {% endif %}
+        </div>
         <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
     </div>
     
@@ -10,13 +15,13 @@
     
     <div class="comment-actions">
         {% if user.is_authenticated and not comment.is_reply %}
-        <button class="btn-reply" onclick="showReplyForm({{ comment.id }})">Ответить</button>
+        <button class="btn-reply" onclick="showReplyForm({{ comment.id }})">💬 Ответить</button>
         {% endif %}
         
-        {% if comment.author == user %}
+        {% if comment.author == user or user.is_staff %}
         <form method="post" action="{% url 'news:delete_comment' comment.id %}" class="delete-form">
             {% csrf_token %}
-            <button type="submit" class="btn-delete" onclick="return confirm('Удалить комментарий?')">Удалить</button>
+            <button type="submit" class="btn-delete" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?')">🗑️ Удалить</button>
         </form>
         {% endif %}
     </div>
@@ -28,10 +33,12 @@
             {% csrf_token %}
             <input type="hidden" name="parent" value="{{ comment.id }}">
             <div class="form-group">
-                <textarea name="content" rows="3" placeholder="Введите ваш ответ..." class="comment-textarea"></textarea>
+                <textarea name="content" rows="3" placeholder="Введите ваш ответ..." class="comment-textarea" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Отправить ответ</button>
-            <button type="button" class="btn btn-secondary" onclick="hideReplyForm({{ comment.id }})">Отмена</button>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">📤 Отправить ответ</button>
+                <button type="button" class="btn btn-secondary" onclick="hideReplyForm({{ comment.id }})">❌ Отмена</button>
+            </div>
         </form>
     </div>
     {% endif %}
