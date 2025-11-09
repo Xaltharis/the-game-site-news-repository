@@ -3,11 +3,12 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
-from django.shortcuts import redirect
 from .models import Article, Tag, Comment
 from .forms import CommentForm, RegisterForm
 
+
 def register(request):
+    """Регистрация пользователя"""
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -20,112 +21,111 @@ def register(request):
     
     return render(request, 'news/register.html', {'form': form})
 
+
 def custom_logout(request):
+    """Выход пользователя"""
     logout(request)
     messages.success(request, 'Вы успешно вышли из системы!')
     return redirect('news:article_list')
 
+
+def get_common_context():
+    """Возвращает общий контекст для нескольких представлений"""
+    return {
+        'all_tags': Tag.objects.all()
+    }
+
+
 def article_list(request):
+    """Список статей с фильтрацией по тегам"""
     articles = Article.objects.filter(is_published=True)
     
     tag_slug = request.GET.get('tag')
     if tag_slug:
         articles = articles.filter(tags__slug=tag_slug)
     
-    # Получаем все теги для боковой панели
-    all_tags = Tag.objects.all()
-    
-    return render(request, 'news/article_list.html', {
+    context = get_common_context()
+    context.update({
         'articles': articles,
         'current_tag': tag_slug,
-        'all_tags': all_tags
     })
+    
+    return render(request, 'news/article_list.html', context)
+
 
 def article_detail(request, slug):
+    """Детальная страница статьи с комментариями"""
     article = get_object_or_404(Article, slug=slug, is_published=True)
     
     # Увеличиваем счетчик просмотров
     article.increment_views()
     
-    # Получаем популярные статьи
+    # Получаем популярные статьи (исключая текущую)
     popular_articles = Article.objects.filter(
         is_published=True
-    ).exclude(
-        id=article.id
-    ).order_by('-views')[:5]
+    ).exclude(id=article.id).order_by('-views')[:5]
     
-    # Получаем все теги
-    all_tags = Tag.objects.all()
-    
-    # Получаем комментарии к статье
+    # Получаем комментарии к статье (только одобренные и корневые)
     comments = article.comments.filter(is_approved=True, parent__isnull=True)
     
-    # Форма для нового комментария
+    # Обработка комментариев
     comment_form = CommentForm()
-    
     if request.method == 'POST' and article.comments_enabled:
-        comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            if request.user.is_authenticated:
-                comment = comment_form.save(commit=False)
-                comment.article = article
-                comment.author = request.user
-                
-                # Проверяем, является ли комментарий ответом
-                parent_id = request.POST.get('parent')
-                if parent_id:
-                    try:
-                        parent_comment = Comment.objects.get(id=parent_id, article=article)
-                        comment.parent = parent_comment
-                    except Comment.DoesNotExist:
-                        pass
-                
-                comment.save()
-                messages.success(request, 'Ваш комментарий добавлен!')
-                return redirect('news:article_detail', slug=article.slug)
-            else:
-                messages.error(request, 'Для добавления комментария необходимо авторизоваться!')
-        else:
-            messages.error(request, 'Ошибка при добавлении комментария. Проверьте форму.')
+        return _handle_comment_submission(request, article)
     
-    return render(request, 'news/article_detail.html', {
+    context = get_common_context()
+    context.update({
         'article': article,
         'popular_articles': popular_articles,
-        'all_tags': all_tags,
         'comments': comments,
-        'comment_form': comment_form
+        'comment_form': comment_form,
     })
+    
+    return render(request, 'news/article_detail.html', context)
+
 
 def articles_by_tag(request, tag_slug):
     """Показывает статьи по определенному тегу"""
     tag = get_object_or_404(Tag, slug=tag_slug)
     articles = Article.objects.filter(tags=tag, is_published=True)
     
-    # Получаем все теги для боковой панели
-    all_tags = Tag.objects.all()
-    
-    return render(request, 'news/articles_by_tag.html', {
+    context = get_common_context()
+    context.update({
         'articles': articles,
         'tag': tag,
-        'all_tags': all_tags
     })
+    
+    return render(request, 'news/articles_by_tag.html', context)
 
-@login_required
-def add_comment(request, slug):
-    article = get_object_or_404(Article, slug=slug, is_published=True)
+
+def _handle_comment_submission(request, article):
+    """Обработка отправки комментария (вспомогательная функция)"""
+    if not request.user.is_authenticated:
+        messages.error(request, 'Для добавления комментария необходимо авторизоваться!')
+        return redirect('news:article_detail', slug=article.slug)
     
-    if request.method == 'POST' and article.comments_enabled:
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = article
-            comment.author = request.user
-            comment.save()
-            messages.success(request, 'Комментарий добавлен!')
-        else:
-            messages.error(request, 'Ошибка при добавлении комментария!')
+    form = CommentForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, 'Ошибка при добавлении комментария. Проверьте форму.')
+        return redirect('news:article_detail', slug=article.slug)
     
+    comment = form.save(commit=False)
+    comment.article = article
+    comment.author = request.user
+    
+    # Обработка родительского комментария
+    parent_id = request.POST.get('parent')
+    if parent_id:
+        try:
+            parent_comment = Comment.objects.get(id=parent_id, article=article)
+            comment.parent = parent_comment
+        except Comment.DoesNotExist:
+            pass
+    
+    comment.save()
+    messages.success(request, 'Ваш комментарий добавлен!')
     return redirect('news:article_detail', slug=article.slug)
+
 
 @login_required
 def add_comment(request, slug):
@@ -150,17 +150,17 @@ def add_comment(request, slug):
             
             comment.save()
             
+            # Обработка AJAX запроса
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                # AJAX запрос - возвращаем JSON
                 return JsonResponse({
                     'success': True,
                     'comment_id': comment.id,
                     'message': 'Комментарий добавлен!'
                 })
             else:
-                # Обычный запрос - редирект
                 messages.success(request, 'Комментарий добавлен!')
         else:
+            # Обработка ошибок AJAX
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False,
@@ -170,6 +170,7 @@ def add_comment(request, slug):
                 messages.error(request, 'Ошибка при добавлении комментария!')
     
     return redirect('news:article_detail', slug=article.slug)
+
 
 @login_required
 def delete_comment(request, comment_id):
