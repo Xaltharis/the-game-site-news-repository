@@ -1,9 +1,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
+from django.shortcuts import redirect
 from .models import Article, Tag, Comment
-from .forms import CommentForm
+from .forms import CommentForm, RegisterForm
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Регистрация прошла успешно!')
+            return redirect('news:article_list')
+    else:
+        form = RegisterForm()
+    
+    return render(request, 'news/register.html', {'form': form})
+
+def custom_logout(request):
+    logout(request)
+    messages.success(request, 'Вы успешно вышли из системы!')
+    return redirect('news:article_list')
 
 def article_list(request):
     articles = Article.objects.filter(is_published=True)

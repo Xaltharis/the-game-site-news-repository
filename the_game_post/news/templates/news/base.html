@@ -11,6 +11,15 @@
     <header class="site-header">
         <div class="container">
             <h1><a href="{% url 'news:article_list' %}">Новостной сайт</a></h1>
+            <nav class="user-menu">
+                {% if user.is_authenticated %}
+                    <span>Привет, {{ user.username }}!</span>
+                    <a href="{% url 'news:logout' %}">Выйти</a>
+                {% else %}
+                    <a href="{% url 'news:login' %}">Войти</a>
+                    <a href="{% url 'news:register' %}">Регистрация</a>
+                {% endif %}
+            </nav>
         </div>
     </header>
 

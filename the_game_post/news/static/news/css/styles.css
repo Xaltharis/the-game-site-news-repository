@@ -220,3 +220,59 @@ body {
     text-decoration: none;
     font-weight: bold;
 }
+
+/* Формы авторизации */
+.auth-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+}
+
+.auth-form h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #2c3e50;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    font-family: inherit;
+}
+
+.error {
+    color: #e74c3c;
+    font-size: 0.8em;
+    margin-top: 0.3rem;
+}
+
+/* Меню пользователя */
+.user-menu {
+    position: absolute;
+    top: 1rem;
+    right: 20px;
+    color: white;
+}
+
+.user-menu a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+.user-menu a:hover {
+    text-decoration: underline;
+}
