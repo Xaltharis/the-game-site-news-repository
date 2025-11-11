@@ -3,6 +3,18 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название категории")
+    slug = models.SlugField(unique=True, verbose_name="URL")
+    
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name="Название тега")
     slug = models.SlugField(unique=True, verbose_name="URL")
@@ -15,11 +27,11 @@ class Tag(models.Model):
         ordering = ['name']
     
     def __str__(self):
-        return self.name
-
+        return self.name    
 class Article(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     slug = models.SlugField(unique=True, verbose_name="URL")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")

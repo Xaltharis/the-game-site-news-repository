@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
-from .models import Article, Tag, Comment
+from .models import Article, Tag, Comment, Category
 from .forms import CommentForm, RegisterForm
 
 
@@ -21,6 +21,20 @@ def register(request):
     
     return render(request, 'news/register.html', {'form': form})
 
+def custom_login(request):
+    from django.contrib.auth import authenticate, login
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Вы успешно вошли!')
+            return redirect('news:article_list')
+        else:
+            messages.error(request, 'Неверное имя пользователя или пароль')
+    return render(request, 'news/login.html')
+
 
 def custom_logout(request):
     """Выход пользователя"""
@@ -36,21 +50,32 @@ def get_common_context():
     }
 
 
-def article_list(request):
-    """Список статей с фильтрацией по тегам"""
+def article_list(request, category_slug=None):
     articles = Article.objects.filter(is_published=True)
     
+    # Фильтрация по категории
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+        articles = articles.filter(category=category)
+        current_category = category
+    else:
+        current_category = None
+    
+    # Фильтрация по тегу
     tag_slug = request.GET.get('tag')
     if tag_slug:
         articles = articles.filter(tags__slug=tag_slug)
     
-    context = get_common_context()
-    context.update({
-        'articles': articles,
-        'current_tag': tag_slug,
-    })
+    all_tags = Tag.objects.all()
+    categories = Category.objects.all()  # ← Это должно быть!
     
-    return render(request, 'news/article_list.html', context)
+    return render(request, 'news/article_list.html', {
+        'articles': articles,
+        'categories': categories,
+        'current_category': current_category,
+        'current_tag': tag_slug,
+        'all_tags': all_tags
+    })
 
 
 def article_detail(request, slug):

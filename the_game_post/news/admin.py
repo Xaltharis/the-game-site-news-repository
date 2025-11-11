@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, ArticleBlock, Tag, Comment
+from .models import Article, ArticleBlock, Tag, Comment, Category
 
 class ArticleBlockInline(admin.TabularInline):
     model = ArticleBlock
@@ -13,6 +13,11 @@ class CommentInline(admin.TabularInline):
     fields = ('author', 'content', 'is_approved', 'created_at')
     readonly_fields = ('created_at',)
     can_delete = True
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -34,9 +39,15 @@ class ArticleAdmin(admin.ModelAdmin):
     inlines = [ArticleBlockInline, CommentInline]
     readonly_fields = ('views',)
     filter_horizontal = ('tags',)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['category'].required = True
+        return form
+
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'slug', 'author', 'is_published')
+            'fields': ('title', 'slug', 'category', 'author', 'is_published')
         }),
         ('Комментарии', {
             'fields': ('comments_enabled',)
