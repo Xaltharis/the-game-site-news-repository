@@ -3,6 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Article, Tag, Comment, Category
 from .forms import CommentForm, RegisterForm
 
@@ -51,12 +52,12 @@ def get_common_context():
 
 
 def article_list(request, category_slug=None):
-    articles = Article.objects.filter(is_published=True)
+    articles_list = Article.objects.filter(is_published=True)
     
     # Фильтрация по категории
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
-        articles = articles.filter(category=category)
+        articles_list = articles_list.filter(category=category)
         current_category = category
     else:
         current_category = None
@@ -64,10 +65,23 @@ def article_list(request, category_slug=None):
     # Фильтрация по тегу
     tag_slug = request.GET.get('tag')
     if tag_slug:
-        articles = articles.filter(tags__slug=tag_slug)
+        articles_list = articles_list.filter(tags__slug=tag_slug)
+    
+    # Пагинация - 10 статей на страницу
+    paginator = Paginator(articles_list, 3)
+    page = request.GET.get('page')
+    
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        # Если page не число, показываем первую страницу
+        articles = paginator.page(1)
+    except EmptyPage:
+        # Если page вне диапазона, показываем последнюю страницу
+        articles = paginator.page(paginator.num_pages)
     
     all_tags = Tag.objects.all()
-    categories = Category.objects.all()  # ← Это должно быть!
+    categories = Category.objects.all()
     
     return render(request, 'news/article_list.html', {
         'articles': articles,

@@ -1,9 +1,5 @@
 {% extends 'news/base.html' %}
 
-{% block title %}
-    {% if current_category %}{{ current_category.name }}{% else %}Все новости{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="articles-header">
     <h2>
@@ -28,6 +24,14 @@
 
 <div class="content-with-sidebar">
     <div class="main-content">
+        <!-- Информация о пагинации -->
+        <div class="pagination-info">
+            Страница {{ articles.number }} из {{ articles.paginator.num_pages }}
+            {% if current_category or current_tag %}
+                • {{ articles.paginator.count }} статей
+            {% endif %}
+        </div>
+
         {% for article in articles %}
         <article class="article-preview">
             <h3><a href="{% url 'news:article_detail' article.slug %}">{{ article.title }}</a></h3>
@@ -59,6 +63,35 @@
         {% empty %}
         <p>Пока нет статей в этой категории.</p>
         {% endfor %}
+
+        <!-- Пагинация -->
+        {% if articles.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if articles.has_previous %}
+                <a href="?page=1{% if current_tag %}&tag={{ current_tag }}{% endif %}">« Первая</a>
+                <a href="?page={{ articles.previous_page_number }}{% if current_tag %}&tag={{ current_tag }}{% endif %}">‹ Назад</a>
+            {% else %}
+                <span class="disabled">« Первая</span>
+                <span class="disabled">‹ Назад</span>
+            {% endif %}
+
+            {% for num in articles.paginator.page_range %}
+                {% if articles.number == num %}
+                    <span class="current">{{ num }}</span>
+                {% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}
+                    <a href="?page={{ num }}{% if current_tag %}&tag={{ current_tag }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if articles.has_next %}
+                <a href="?page={{ articles.next_page_number }}{% if current_tag %}&tag={{ current_tag }}{% endif %}">Вперёд ›</a>
+                <a href="?page={{ articles.paginator.num_pages }}{% if current_tag %}&tag={{ current_tag }}{% endif %}">Последняя »</a>
+            {% else %}
+                <span class="disabled">Вперёд ›</span>
+                <span class="disabled">Последняя »</span>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
     
     <aside class="sidebar">
