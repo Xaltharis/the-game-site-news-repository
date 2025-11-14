@@ -229,3 +229,7 @@ def delete_comment(request, comment_id):
         messages.error(request, 'Неверный метод запроса')
     
     return redirect('news:article_detail', slug=article_slug)
+
+def about(request):
+    """Страница информации о сайте"""
+    return render(request, 'news/about.html')

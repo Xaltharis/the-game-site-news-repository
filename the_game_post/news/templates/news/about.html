@@ -1,0 +1,53 @@
+{% extends 'news/base.html' %}
+
+{% block title %}О сайте - The Game Post{% endblock %}
+
+{% block content %}
+<div class="news-article">
+    <header class="article-header">
+        <h1>О сайте The Game Post</h1>
+    </header>
+
+    <div class="text-block">
+        <h2>Добро пожаловать на The Game Post!</h2>
+        <p>Это ваш надежный источник новостей, обзоров и статей о мире видеоигр. Мы освещаем самые актуальные события игровой индустрии, делимся подробными обзорами новых релизов и публикуем интересные аналитические материалы.</p>
+    </div>
+
+    <div class="text-block">
+        <h3>Что вы найдете на нашем сайте:</h3>
+        <ul>
+            <li><strong>Новости</strong> - самые свежие анонсы и события из мира игр</li>
+            <li><strong>Обзоры игр</strong> - подробный разбор новых релизов и классики</li>
+            <li><strong>Статьи</strong> - аналитика, гайды и интересные материалы</li>
+            <li><strong>Комментарии</strong> - делитесь своим мнением с другими геймерами</li>
+        </ul>
+    </div>
+
+    <div class="text-block">
+        <h3>Наши категории:</h3>
+        <div class="article-tags">
+            <span class="tag" style="background: #63b3ed; color: #1a1a1a;">Новости</span>
+            <span class="tag" style="background: #48bb78; color: #1a1a1a;">Игры</span>
+            <span class="tag" style="background: #ed8936; color: #1a1a1a;">Статьи</span>
+        </div>
+    </div>
+
+    <div class="text-block">
+        <h3>Присоединяйтесь к нашему сообществу!</h3>
+        <p>Зарегистрируйтесь на сайте, чтобы:</p>
+        <ul>
+            <li>Оставлять комментарии к статьям</li>
+            <li>Обсуждать материалы с другими читателями</li>
+            <li>Быть в курсе всех обновлений</li>
+        </ul>
+    </div>
+
+    <div class="text-block">
+        <p><strong>The Game Post</strong> - место, где встречаются страсть к играм и качественный контент!</p>
+    </div>
+
+    <div class="article-actions">
+        <a href="{% url 'news:article_list' %}" class="back-link">← Вернуться к статьям</a>
+    </div>
+</div>
+{% endblock %}

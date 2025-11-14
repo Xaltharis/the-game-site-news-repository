@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Новостной сайт{% endblock %}</title>
+    <title>{% block title %}The game post{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'news/css/styles.css' %}">
 </head>
@@ -11,7 +11,7 @@
     <header class="site-header">
         <div class="container">
             <div class="header-top">
-                <h1><a href="{% url 'news:article_list' %}">Новостной сайт</a></h1>
+                <h1><a href="{% url 'news:article_list' %}">The game post</a></h1>
                 <div class="user-menu">
                 <button class="user-icon" onclick="toggleDropdown()">
                     👤
@@ -36,6 +36,7 @@
                     <li><a href="{% url 'news:articles_by_category' 'novosti' %}" {% if current_category and current_category.slug == 'novosti' %}class="active"{% endif %}>Новости</a></li>
                     <li><a href="{% url 'news:articles_by_category' 'igry' %}" {% if current_category and current_category.slug == 'igry' %}class="active"{% endif %}>Игры</a></li>
                     <li><a href="{% url 'news:articles_by_category' 'stati' %}" {% if current_category and current_category.slug == 'stati' %}class="active"{% endif %}>Статьи</a></li>
+                    <li><a href="{% url 'news:about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>О сайте</a></li>
                 </ul>
             </div>
         </nav>
@@ -60,7 +61,7 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2025 Новостной сайт. Все права защищены.</p>
+            <p>&copy; 2025 The game post. Все права защищены.</p>
         </div>
     </footer>
 

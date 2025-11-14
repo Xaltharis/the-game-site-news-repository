@@ -11,6 +11,7 @@ urlpatterns = [
     path('tag/<slug:tag_slug>/', articles_by_tag, name='articles_by_tag'),
     path('article/<slug:slug>/comment/', add_comment, name='add_comment'),
     path('comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
+    path('about/', about, name='about'),
 
     # Авторизация
     path('register/', register, name='register'),
