@@ -47,7 +47,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'slug', 'category', 'author', 'is_published')
+            'fields': ('title', 'slug', 'category', 'thumbnail', 'author', 'is_published')
         }),
         ('Комментарии', {
             'fields': ('comments_enabled',)

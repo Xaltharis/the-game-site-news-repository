@@ -32,6 +32,12 @@ class Article(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     slug = models.SlugField(unique=True, verbose_name="URL")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
+    thumbnail = models.ImageField(
+        upload_to='articles/thumbnails/%Y/%m/%d/', 
+        blank=True, 
+        null=True,
+        verbose_name="Миниатюра статьи"
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")

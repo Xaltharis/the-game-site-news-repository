@@ -1,5 +1,17 @@
 {% extends 'news/base.html' %}
 
+{% block title %}
+    {% if current_category %}
+        {% if current_category.slug == 'novosti' %}Новости
+        {% elif current_category.slug == 'igry' %}Игры
+        {% elif current_category.slug == 'stati' %}Статьи
+        {% else %}{{ current_category.name }}
+        {% endif %}
+    {% else %}
+        Все новости
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="articles-header">
     <h2>
@@ -34,31 +46,34 @@
 
         {% for article in articles %}
         <article class="article-preview">
-            <h3><a href="{% url 'news:article_detail' article.slug %}">{{ article.title }}</a></h3>
-            <div class="article-meta">
-                <span class="date">{{ article.created_at|date:"d.m.Y" }}</span>
-                <span class="author">Автор: {{ article.author.username }}</span>
-                <span class="views">👁 {{ article.views }}</span>
-                <span class="comments-count">💬 {{ article.get_comments_count }}</span>
-            </div>
-            
-            <div class="article-tags">
-                {% for tag in article.tags.all %}
-                <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">
-                    {{ tag.name }}
-                </a>
-                {% endfor %}
-            </div>
-            
-            {% with first_block=article.blocks.first %}
-                {% if first_block.block_type == 'text' %}
-                    <p>{{ first_block.content|truncatewords:30 }}</p>
-                {% elif first_block.block_type == 'image' and first_block.image %}
-                    <img src="{{ first_block.image.url }}" alt="{{ first_block.image_caption }}" class="preview-image">
+            <div class="article-preview-header">
+                {% if article.thumbnail %}
+                <div class="article-thumbnail">
+                    <img src="{{ article.thumbnail.url }}" alt="{{ article.title }}" class="thumbnail-image">
+                </div>
                 {% endif %}
-            {% endwith %}
-            
-            <a href="{% url 'news:article_detail' article.slug %}" class="read-more">Читать далее</a>
+                
+                <div class="article-preview-content">
+                    <h3><a href="{% url 'news:article_detail' article.slug %}">{{ article.title }}</a></h3>
+                    
+                    <div class="article-meta">
+                        <span class="date">{{ article.created_at|date:"d.m.Y" }}</span>
+                        <span class="author">Автор: {{ article.author.username }}</span>
+                        <span class="views">👁 {{ article.views }}</span>
+                        <span class="comments-count">💬 {{ article.get_comments_count }}</span>
+                    </div>
+                    
+                    <div class="article-tags">
+                        {% for tag in article.tags.all %}
+                        <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">
+                            {{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    
+                    <a href="{% url 'news:article_detail' article.slug %}" class="read-more">Читать далее</a>
+                </div>
+            </div>
         </article>
         {% empty %}
         <p>Пока нет статей в этой категории.</p>
