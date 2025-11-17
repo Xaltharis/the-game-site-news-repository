@@ -13,6 +13,48 @@
 {% endblock %}
 
 {% block content %}
+<!-- Hero блок (только для главной) -->
+{% if show_hero and hero_articles %}
+<section class="hero-block">
+    <div class="container">
+        <h2 class="hero-title">🔥 Популярные статьи</h2>
+        <div class="hero-articles">
+            {% for article in hero_articles %}
+            <article class="hero-article">
+                {% if article.thumbnail %}
+                <div class="hero-article-image">
+                    <img src="{{ article.thumbnail.url }}" alt="{{ article.title }}">
+                </div>
+                {% endif %}
+                <div class="hero-article-content">
+                    <div class="hero-article-meta">
+                        <span class="hero-article-category">
+                            {% if article.category.slug == 'novosti' %}Новости
+                            {% elif article.category.slug == 'igry' %}Игры
+                            {% elif article.category.slug == 'stati' %}Статьи
+                            {% else %}{{ article.category.name }}
+                            {% endif %}
+                        </span>
+                        <span class="hero-article-views">👁 {{ article.views }}</span>
+                    </div>
+                    <h3 class="hero-article-title">
+                        <a href="{% url 'news:article_detail' article.slug %}">{{ article.title }}</a>
+                    </h3>
+                    <div class="hero-article-tags">
+                        {% for tag in article.tags.all|slice:":2" %}
+                        <span class="hero-tag" style="background-color: {{ tag.color }}">
+                            {{ tag.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <div class="articles-header">
     <h2>
         {% if current_category %}

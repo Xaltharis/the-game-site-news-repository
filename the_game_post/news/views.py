@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import timezone
 from .models import Article, Tag, Comment, Category
 from .forms import CommentForm, RegisterForm
+from datetime import timedelta
 
 
 def register(request):
@@ -59,25 +61,44 @@ def article_list(request, category_slug=None):
         category = get_object_or_404(Category, slug=category_slug)
         articles_list = articles_list.filter(category=category)
         current_category = category
+        show_hero = False  # Не показываем hero на категориях
     else:
         current_category = None
+        show_hero = True   # Показываем hero только на "Все новости"
+    
+    # Получаем статьи для Hero блока (только для главной)
+    hero_articles = []
+    if show_hero:
+        # 1. Самые просматриваемые за все время (3 статьи)
+        most_viewed = articles_list.order_by('-views')[:3]
+        
+        # 2. За последнюю неделю (по дате создания)
+        week_ago = timezone.now() - timedelta(days=7)
+        recent_popular = articles_list.filter(
+            created_at__gte=week_ago
+        ).order_by('-views')[:3]
+        
+        hero_articles = list(most_viewed) + list(recent_popular)
+        # Убираем дубликаты
+        seen = set()
+        hero_articles = [article for article in hero_articles 
+                        if not (article.id in seen or seen.add(article.id))]
+        hero_articles = hero_articles[:3]  # Берем максимум 3 уникальные статьи
     
     # Фильтрация по тегу
     tag_slug = request.GET.get('tag')
     if tag_slug:
         articles_list = articles_list.filter(tags__slug=tag_slug)
     
-    # Пагинация - 10 статей на страницу
+    # Пагинация
     paginator = Paginator(articles_list, 3)
     page = request.GET.get('page')
     
     try:
         articles = paginator.page(page)
     except PageNotAnInteger:
-        # Если page не число, показываем первую страницу
         articles = paginator.page(1)
     except EmptyPage:
-        # Если page вне диапазона, показываем последнюю страницу
         articles = paginator.page(paginator.num_pages)
     
     all_tags = Tag.objects.all()
@@ -88,7 +109,9 @@ def article_list(request, category_slug=None):
         'categories': categories,
         'current_category': current_category,
         'current_tag': tag_slug,
-        'all_tags': all_tags
+        'all_tags': all_tags,
+        'show_hero': show_hero,
+        'hero_articles': hero_articles,
     })
 
 
