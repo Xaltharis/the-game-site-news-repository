@@ -10,36 +10,43 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <div class="header-top">
-                <h1><a href="{% url 'news:article_list' %}">The game post</a></h1>
-                <div class="user-menu">
-                <button class="user-icon" onclick="toggleDropdown()">
-                    👤
-                </button>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    {% if user.is_authenticated %}
-                        <div class="user-greeting">Аккаунт пользователя: {{ user.username }}!</div>
-                        <a href="{% url 'news:logout' %}">🚪 Выйти</a>
-                    {% else %}
-                        <a href="{% url 'news:login' %}">🔑 Войти</a>
-                        <a href="{% url 'news:register' %}">📝 Регистрация</a>
-                    {% endif %}
+            <nav class="main-nav">
+                <div class="nav-content">
+                    <!-- Название сайта -->
+                    <div class="site-title">
+                        <a href="{% url 'news:article_list' %}" class="logo-link">
+                            <img src="{% static 'news/images/logo.png' %}" alt="The Game Post" class="logo">
+                            <span class="site-name">The Game Post</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Основное меню -->
+                    <ul class="nav-menu">
+                        <li><a href="{% url 'news:article_list' %}" {% if not current_category %}class="active"{% endif %}>Все новости</a></li>
+                        <li><a href="{% url 'news:articles_by_category' 'novosti' %}" {% if current_category and current_category.slug == 'novosti' %}class="active"{% endif %}>Новости</a></li>
+                        <li><a href="{% url 'news:articles_by_category' 'igry' %}" {% if current_category and current_category.slug == 'igry' %}class="active"{% endif %}>Игры</a></li>
+                        <li><a href="{% url 'news:articles_by_category' 'stati' %}" {% if current_category and current_category.slug == 'stati' %}class="active"{% endif %}>Статьи</a></li>
+                        <li><a href="{% url 'news:about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>О сайте</a></li>
+                    </ul>
+                    
+                    <!-- Пользовательское меню -->
+                    <div class="user-menu">
+                        <button class="user-icon" onclick="toggleDropdown()">
+                            👨‍💼
+                        </button>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            {% if user.is_authenticated %}
+                                <div class="user-greeting">Аккаунт пользователя: {{ user.username }}!</div>
+                                <a href="{% url 'news:logout' %}">🚪 Выйти</a>
+                            {% else %}
+                                <a href="{% url 'news:login' %}">🔑 Войти</a>
+                                <a href="{% url 'news:register' %}">📝 Регистрация</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </nav>
         </div>
-    </div>
-        
-        <nav class="main-nav">
-            <div class="container">
-                <ul class="nav-menu">
-                    <li><a href="{% url 'news:article_list' %}" {% if not current_category %}class="active"{% endif %}>Все новости</a></li>
-                    <li><a href="{% url 'news:articles_by_category' 'novosti' %}" {% if current_category and current_category.slug == 'novosti' %}class="active"{% endif %}>Новости</a></li>
-                    <li><a href="{% url 'news:articles_by_category' 'igry' %}" {% if current_category and current_category.slug == 'igry' %}class="active"{% endif %}>Игры</a></li>
-                    <li><a href="{% url 'news:articles_by_category' 'stati' %}" {% if current_category and current_category.slug == 'stati' %}class="active"{% endif %}>Статьи</a></li>
-                    <li><a href="{% url 'news:about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>О сайте</a></li>
-                </ul>
-            </div>
-        </nav>
     </header>
 
     <div class="overlay" id="overlay" onclick="closeDropdown()"></div>
@@ -59,11 +66,24 @@
         {% endblock %}
     </main>
 
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2025 The game post. Все права защищены.</p>
+<footer class="site-footer">
+    <div class="container">
+        <!-- Минималистичная навигация -->
+        <nav class="footer-nav">
+            <ul class="footer-menu">
+                <li><a href="{% url 'news:article_list' %}">Главная</a></li>
+                <li><a href="{% url 'news:articles_by_category' 'novosti' %}">Новости</a></li>
+                <li><a href="{% url 'news:articles_by_category' 'igry' %}">Игры</a></li>
+                <li><a href="{% url 'news:articles_by_category' 'stati' %}">Статьи</a></li>
+                <li><a href="{% url 'news:about' %}">О сайте</a></li>
+            </ul>
+        </nav>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 The Game Post. Все права защищены.</p>
         </div>
-    </footer>
+    </div>
+</footer>
 
 <script>
 function toggleDropdown() {

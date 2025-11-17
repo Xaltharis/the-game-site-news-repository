@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 /* Основные стили */
 body {
-    font-family: 'Georgia', serif;
+    font-family: "Inter", sans-serif;
     line-height: 1.6;
     color: #e0e0e0;
     margin: 0;
@@ -22,12 +23,6 @@ body {
     border-bottom: 2px solid #555;
 }
 
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-}
 
 .site-header h1 {
     margin: 0;
@@ -51,14 +46,36 @@ body {
 /* Навигация */
 .main-nav {
     background: #404040;
-    border-bottom: 1px solid #555;
+    padding: 1rem 0;
 }
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.site-title {
+    margin: 0;
+    font-size: 1.8em;
+    flex-shrink: 0;
+}
+
+.site-title a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: bold;
+}
+
 
 .nav-menu {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
+    gap: 0.5rem;
+    flex-grow: 1;
     justify-content: center;
 }
 
@@ -68,26 +85,33 @@ body {
 
 .nav-menu a {
     display: block;
-    padding: 1rem 2rem;
+    padding: 0.8rem 1.5rem;
     color: #e0e0e0;
     text-decoration: none;
     font-size: 1.1em;
     font-weight: 500;
     transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
+    border-radius: 6px;
+    border: 1px solid transparent;
 }
 
 .nav-menu a:hover {
     background: #555;
     color: #ffffff;
-    border-bottom: 3px solid #63b3ed;
+    border-color: #63b3ed;
 }
 
 .nav-menu a.active {
     background: #555;
     color: #ffffff;
-    border-bottom: 3px solid #63b3ed;
+    border-color: #63b3ed;
     font-weight: 600;
+}
+
+.user-menu {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
 }
 
 /* Меню пользователя с выпадающим списком */
@@ -820,5 +844,161 @@ body {
     .article-thumbnail {
         width: 100%;
         height: 180px;
+    }
+}
+
+/* Кнопка назад в шапке статьи */
+.article-actions-top {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.article-actions-top .back-link {
+    color: #63b3ed;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.article-actions-top .back-link:hover {
+    color: #90cdf4;
+    text-decoration: underline;
+}
+
+/* Убираем старую кнопку внизу если она есть */
+.article-actions {
+    display: none;
+}
+
+/* Стили для логотипа */
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: #e0e0e0;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.site-name {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+/* Адаптивность для логотипа */
+@media (max-width: 768px) {
+    .logo {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .site-name {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-link {
+        gap: 0.5rem;
+    }
+    
+    .logo {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .site-name {
+        font-size: 1.1em;
+    }
+}
+
+/* Футер с навигацией */
+.site-footer {
+    background: #404040;
+    color: #e0e0e0;
+    padding: 2rem 0 1rem;
+    margin-top: 4rem;
+    border-top: 2px solid #555;
+}
+
+.footer-nav {
+    margin-bottom: 1.5rem;
+}
+
+.footer-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.footer-menu li {
+    margin: 0;
+}
+
+.footer-menu a {
+    color: #b0b0b0;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid transparent;
+}
+
+.footer-menu a:hover {
+    color: #63b3ed;
+    border-bottom-color: #63b3ed;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #555;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: #b0b0b0;
+    font-size: 0.9em;
+}
+
+/* Адаптивность для футера */
+@media (max-width: 768px) {
+    .footer-menu {
+        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-menu a {
+        font-size: 0.85em;
+    }
+    
+    .site-footer {
+        padding: 1.5rem 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-menu {
+        gap: 0.8rem;
+    }
+    
+    .footer-menu a {
+        font-size: 0.8em;
     }
 }

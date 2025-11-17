@@ -6,6 +6,9 @@
 <div class="content-with-sidebar">
     <div class="main-content">
         <article class="news-article">
+            <div class="article-actions-top">
+                <a href="{% url 'news:article_list' %}" class="back-link">← Назад к списку статей</a>
+            </div>
             <!-- Заголовок и мета-информация -->
             <header class="article-header">
                 <h1>{{ article.title }}</h1>
@@ -99,9 +102,6 @@
         </div>
         {% endif %}
 
-        <div class="article-actions">
-            <a href="{% url 'news:article_list' %}" class="back-link">← Назад к списку статей</a>
-        </div>
     </div>
     
     <!-- Боковая панель -->
