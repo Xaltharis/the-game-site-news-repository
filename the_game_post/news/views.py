@@ -5,9 +5,9 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
-from .models import Article, Tag, Comment, Category
-from .forms import CommentForm, RegisterForm
 from datetime import timedelta
+from .models import Article, Tag, Comment, Category, Genre
+from .forms import CommentForm, RegisterForm
 
 
 def register(request):
@@ -22,7 +22,10 @@ def register(request):
     else:
         form = RegisterForm()
     
-    return render(request, 'news/register.html', {'form': form})
+    context = get_common_context()
+    context['form'] = form
+    return render(request, 'news/register.html', context)
+
 
 def custom_login(request):
     from django.contrib.auth import authenticate, login
@@ -36,7 +39,9 @@ def custom_login(request):
             return redirect('news:article_list')
         else:
             messages.error(request, 'Неверное имя пользователя или пароль')
-    return render(request, 'news/login.html')
+    
+    context = get_common_context()
+    return render(request, 'news/login.html', context)
 
 
 def custom_logout(request):
@@ -49,7 +54,8 @@ def custom_logout(request):
 def get_common_context():
     """Возвращает общий контекст для нескольких представлений"""
     return {
-        'all_tags': Tag.objects.all()
+        'all_tags': Tag.objects.all(),
+        'all_genres': Genre.objects.all()  # Добавляем жанры
     }
 
 
@@ -90,29 +96,31 @@ def article_list(request, category_slug=None):
     if tag_slug:
         articles_list = articles_list.filter(tags__slug=tag_slug)
     
-    # Пагинация
+    # Пагинация - 10 статей на страницу
     paginator = Paginator(articles_list, 3)
     page = request.GET.get('page')
     
     try:
         articles = paginator.page(page)
     except PageNotAnInteger:
+        # Если page не число, показываем первую страницу
         articles = paginator.page(1)
     except EmptyPage:
+        # Если page вне диапазона, показываем последнюю страницу
         articles = paginator.page(paginator.num_pages)
     
-    all_tags = Tag.objects.all()
-    categories = Category.objects.all()
-    
-    return render(request, 'news/article_list.html', {
+    # Получаем общий контекст
+    context = get_common_context()
+    context.update({
         'articles': articles,
-        'categories': categories,
+        'categories': Category.objects.all(),
         'current_category': current_category,
         'current_tag': tag_slug,
-        'all_tags': all_tags,
         'show_hero': show_hero,
         'hero_articles': hero_articles,
     })
+    
+    return render(request, 'news/article_list.html', context)
 
 
 def article_detail(request, slug):
@@ -135,6 +143,7 @@ def article_detail(request, slug):
     if request.method == 'POST' and article.comments_enabled:
         return _handle_comment_submission(request, article)
     
+    # Получаем общий контекст
     context = get_common_context()
     context.update({
         'article': article,
@@ -145,12 +154,37 @@ def article_detail(request, slug):
     
     return render(request, 'news/article_detail.html', context)
 
+def articles_by_genre(request, genre_slug):
+    """Показывает игры по определенному жанру"""
+    genre = get_object_or_404(Genre, slug=genre_slug)
+    
+    # Получаем категорию "Игры"
+    games_category = get_object_or_404(Category, slug='igry')
+    
+    # Фильтруем статьи: только игры с выбранным жанром
+    articles = Article.objects.filter(
+        category=games_category,
+        genre=genre,
+        is_published=True
+    )
+    
+    # Получаем общий контекст
+    context = get_common_context()
+    context.update({
+        'articles': articles,
+        'genre': genre,
+        'current_genre': genre_slug,
+    })
+    
+    return render(request, 'news/articles_by_genre.html', context)
+
 
 def articles_by_tag(request, tag_slug):
     """Показывает статьи по определенному тегу"""
     tag = get_object_or_404(Tag, slug=tag_slug)
     articles = Article.objects.filter(tags=tag, is_published=True)
     
+    # Получаем общий контекст
     context = get_common_context()
     context.update({
         'articles': articles,
@@ -253,6 +287,8 @@ def delete_comment(request, comment_id):
     
     return redirect('news:article_detail', slug=article_slug)
 
+
 def about(request):
     """Страница информации о сайте"""
-    return render(request, 'news/about.html')
+    context = get_common_context()
+    return render(request, 'news/about.html', context)

@@ -1321,3 +1321,141 @@ body {
         font-size: 1em;
     }
 }
+
+/* Стили для жанров игр */
+.article-genre {
+    display: inline-block;
+    padding: 4px 10px;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: 600;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* В Hero блоке */
+.hero-article-genre {
+    display: inline-block;
+    padding: 3px 8px;
+    color: #1a1a1a;
+    border-radius: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    margin-right: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Облако жанров */
+.genres-cloud {
+    background: #1a1a1a;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    margin-bottom: 2rem;
+}
+
+.genres-cloud h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #e0e0e0;
+    font-size: 1.1em;
+}
+
+.genres-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.genre-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
+
+.genre-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.no-genres {
+    color: #888;
+    font-style: italic;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* Адаптивность для облака жанров */
+@media (max-width: 768px) {
+    .genres-cloud {
+        margin-bottom: 1.5rem;
+    }
+    
+    .genre-tag {
+        padding: 5px 10px;
+        font-size: 0.75em;
+    }
+}
+
+/* Стили для кликабельных жанров */
+.genre-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.genre-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    color: #1a1a1a;
+}
+
+/* Жанры в статьях (с эмодзи) */
+.article-genre {
+    display: inline-block;
+    padding: 4px 10px;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: 600;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* В Hero блоке */
+.hero-article-genre {
+    display: inline-block;
+    padding: 3px 8px;
+    color: #1a1a1a;
+    border-radius: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    margin-right: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}

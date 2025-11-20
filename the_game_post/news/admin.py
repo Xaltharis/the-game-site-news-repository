@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, ArticleBlock, Tag, Comment, Category
+from .models import Article, ArticleBlock, Tag, Comment, Category, Genre
 
 class ArticleBlockInline(admin.TabularInline):
     model = ArticleBlock
@@ -30,10 +30,21 @@ class TagAdmin(admin.ModelAdmin):
         return obj.articles.count()
     article_count.short_description = 'Количество статей'
 
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'color', 'article_count')
+    list_filter = ('name',)
+    search_fields = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
+    
+    def article_count(self, obj):
+        return obj.article_set.count()
+    article_count.short_description = 'Количество статей'
+
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created_at', 'views', 'is_published', 'comments_enabled', 'display_tags')
-    list_filter = ('is_published', 'created_at', 'author', 'tags', 'comments_enabled')
+    list_display = ('title', 'author', 'category', 'genre', 'created_at', 'views', 'is_published')
+    list_filter = ('is_published', 'created_at', 'author', 'tags', 'comments_enabled', 'category', 'genre')
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [ArticleBlockInline, CommentInline]
@@ -47,7 +58,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'slug', 'category', 'thumbnail', 'author', 'is_published')
+            'fields': ('title', 'slug', 'category', 'genre', 'thumbnail', 'author', 'is_published')
         }),
         ('Комментарии', {
             'fields': ('comments_enabled',)

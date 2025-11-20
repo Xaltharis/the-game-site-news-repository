@@ -3,6 +3,20 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 
+class Genre(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название жанра")
+    slug = models.SlugField(unique=True, verbose_name="URL")
+    color = models.CharField(max_length=7, default="#805AD5", verbose_name="Цвет жанра", 
+                           help_text="В формате HEX, например: #805AD5")
+    
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название категории")
     slug = models.SlugField(unique=True, verbose_name="URL")
@@ -32,6 +46,9 @@ class Article(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     slug = models.SlugField(unique=True, verbose_name="URL")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True, blank=True, 
+                            verbose_name="Жанр игры", 
+                            help_text="Выберите только если категория 'Игры'")
     thumbnail = models.ImageField(
         upload_to='articles/thumbnails/%Y/%m/%d/', 
         blank=True, 
@@ -65,6 +82,13 @@ class Article(models.Model):
     def get_comments_count(self):
         """Возвращает количество комментариев к статье"""
         return self.comments.filter(is_approved=True).count()
+    
+    def get_genre_display(self):
+        """Возвращает жанр если категория - Игры"""
+        if self.category and self.category.slug == 'igry' and self.genre:
+            return self.genre
+        return None
+    
 
 class ArticleBlock(models.Model):
     BLOCK_TYPES = [

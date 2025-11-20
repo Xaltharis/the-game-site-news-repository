@@ -8,6 +8,7 @@ urlpatterns = [
     path('', article_list, name='article_list'),
     path('category/<slug:category_slug>/', article_list, name='articles_by_category'),
     path('article/<slug:slug>/', article_detail, name='article_detail'),
+    path('genre/<slug:genre_slug>/', articles_by_genre, name='articles_by_genre'),
     path('tag/<slug:tag_slug>/', articles_by_tag, name='articles_by_tag'),
     path('article/<slug:slug>/comment/', add_comment, name='add_comment'),
     path('comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),

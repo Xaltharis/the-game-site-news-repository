@@ -9,6 +9,7 @@
             <div class="article-actions-top">
                 <a href="{% url 'news:article_list' %}" class="back-link">← Назад к списку статей</a>
             </div>
+            
             <!-- Заголовок и мета-информация -->
             <header class="article-header">
                 <h1>{{ article.title }}</h1>
@@ -17,6 +18,11 @@
                     <span class="author">Автор: {{ article.author.username }}</span>
                     <span class="views">👁 {{ article.views }}</span>
                     <span class="comments-count">💬 {{ article.get_comments_count }}</span>
+                    {% if article.category.slug == 'igry' and article.genre %}
+                    <span class="article-genre" style="background-color: {{ article.genre.color }}">
+                        🎮 {{ article.genre.name }}
+                    </span>
+                    {% endif %}
                 </div>
                 
                 <div class="article-tags">
@@ -48,44 +54,44 @@
             </section>
         </article>
 
-<!-- Секция комментариев -->
-<section class="comments-section">
-    <h3>💬 Комментарии ({{ article.get_comments_count }})</h3>
-    
-    {% if article.comments_enabled %}
-        <!-- Форма добавления основного комментария -->
-        {% if user.is_authenticated %}
-        <div class="comment-form main-form">
-            <h4>💭 Добавить комментарий</h4>
-            <form method="post" class="comment-form">
-                {% csrf_token %}
-                {{ comment_form.parent }}
-                <div class="form-group">
-                    {{ comment_form.content }}
+        <!-- Секция комментариев -->
+        <section class="comments-section">
+            <h3>💬 Комментарии ({{ article.get_comments_count }})</h3>
+            
+            {% if article.comments_enabled %}
+                <!-- Форма добавления основного комментария -->
+                {% if user.is_authenticated %}
+                <div class="comment-form main-form">
+                    <h4>💭 Добавить комментарий</h4>
+                    <form method="post" class="comment-form">
+                        {% csrf_token %}
+                        {{ comment_form.parent }}
+                        <div class="form-group">
+                            {{ comment_form.content }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">📤 Отправить комментарий</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary">📤 Отправить комментарий</button>
-            </form>
-        </div>
-        {% else %}
-        <div class="auth-required">
-            <p>🔒 Для добавления комментария <a href="{% url 'news:login' %}">войдите</a> в систему.</p>
-        </div>
-        {% endif %}
+                {% else %}
+                <div class="auth-required">
+                    <p>🔒 Для добавления комментария <a href="{% url 'news:login' %}">войдите</a> в систему.</p>
+                </div>
+                {% endif %}
 
-        <!-- Список комментариев -->
-        <div class="comments-list" id="comments-list">
-            {% for comment in comments %}
-                {% include 'news/comment.html' with comment=comment %}
-            {% empty %}
-            <p class="no-comments">😴 Пока нет комментариев. Будьте первым!</p>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="comments-disabled">
-            <p>🔒 Комментарии к этой статье отключены.</p>
-        </div>
-    {% endif %}
-</section>
+                <!-- Список комментариев -->
+                <div class="comments-list" id="comments-list">
+                    {% for comment in comments %}
+                        {% include 'news/comment.html' with comment=comment %}
+                    {% empty %}
+                    <p class="no-comments">😴 Пока нет комментариев. Будьте первым!</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="comments-disabled">
+                    <p>🔒 Комментарии к этой статье отключены.</p>
+                </div>
+            {% endif %}
+        </section>
 
         <!-- Популярные статьи -->
         {% if popular_articles %}
@@ -101,13 +107,27 @@
             </div>
         </div>
         {% endif %}
-
     </div>
     
     <!-- Боковая панель -->
     <aside class="sidebar">
+        <!-- Облако жанров -->
+        <div class="genres-cloud">
+            <h3>🎮 Жанры игр</h3>
+            <div class="genres-list">
+                {% for genre in all_genres %}
+                <a href="{% url 'news:articles_by_genre' genre.slug %}" class="genre-tag" style="background-color: {{ genre.color }}">
+                    {{ genre.name }}
+                </a>
+                {% empty %}
+                <p class="no-genres">Жанры пока не добавлены</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Облако тегов -->
         <div class="tags-cloud">
-            <h3>Все теги</h3>
+            <h3>🏷️ Теги</h3>
             <div class="tags-list">
                 {% for tag in all_tags %}
                 <a href="{% url 'news:articles_by_tag' tag.slug %}" class="tag" style="background-color: {{ tag.color }}">

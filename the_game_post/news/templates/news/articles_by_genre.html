@@ -1,13 +1,13 @@
 {% extends 'news/base.html' %}
 
-{% block title %}Статьи с тегом "{{ tag.name }}"{% endblock %}
+{% block title %}Игры в жанре "{{ genre.name }}"{% endblock %}
 
 {% block content %}
 <div class="articles-header">
-    <h2>Статьи с тегом: <span class="tag" style="background-color: {{ tag.color }}">{{ tag.name }}</span></h2>
+    <h2>Игры в жанре: <span class="genre-tag" style="background-color: {{ genre.color }}">{{ genre.name }}</span></h2>
     
     <div class="current-tag">
-        <a href="{% url 'news:article_list' %}" class="clear-filter">← Все статьи</a>
+        <a href="{% url 'news:articles_by_category' 'igry' %}" class="clear-filter">← Все игры</a>
     </div>
 </div>
 
@@ -30,11 +30,9 @@
                         <span class="author">Автор: {{ article.author.username }}</span>
                         <span class="views">👁 {{ article.views }}</span>
                         <span class="comments-count">💬 {{ article.get_comments_count }}</span>
-                        {% if article.category.slug == 'igry' and article.genre %}
                         <span class="article-genre" style="background-color: {{ article.genre.color }}">
                             🎮 {{ article.genre.name }}
                         </span>
-                        {% endif %}
                     </div>
                     
                     <div class="article-tags">
@@ -51,8 +49,8 @@
         </article>
         {% empty %}
         <div class="no-articles">
-            <p>Пока нет статей с этим тегом.</p>
-            <a href="{% url 'news:article_list' %}" class="back-link">← Вернуться ко всем статьям</a>
+            <p>Пока нет игр в жанре "{{ genre.name }}".</p>
+            <a href="{% url 'news:articles_by_category' 'igry' %}" class="back-link">← Вернуться ко всем играм</a>
         </div>
         {% endfor %}
     </div>
@@ -62,9 +60,9 @@
         <div class="genres-cloud">
             <h3>🎮 Жанры игр</h3>
             <div class="genres-list">
-                {% for genre in all_genres %}
-                <a href="{% url 'news:articles_by_genre' genre.slug %}" class="genre-tag" style="background-color: {{ genre.color }}">
-                    {{ genre.name }}
+                {% for genre_item in all_genres %}
+                <a href="{% url 'news:articles_by_genre' genre_item.slug %}" class="genre-tag" style="background-color: {{ genre_item.color }}">
+                    {{ genre_item.name }}
                 </a>
                 {% empty %}
                 <p class="no-genres">Жанры пока не добавлены</p>
