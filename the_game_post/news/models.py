@@ -3,20 +3,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 
-class Genre(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Название жанра")
-    slug = models.SlugField(unique=True, verbose_name="URL")
-    color = models.CharField(max_length=7, default="#805AD5", verbose_name="Цвет жанра", 
-                           help_text="В формате HEX, например: #805AD5")
-    
-    class Meta:
-        verbose_name = "Жанр"
-        verbose_name_plural = "Жанры"
-        ordering = ['name']
-    
-    def __str__(self):
-        return self.name
-
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название категории")
     slug = models.SlugField(unique=True, verbose_name="URL")
@@ -24,6 +10,20 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
+class Genre(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название жанра")
+    slug = models.SlugField(unique=True, verbose_name="URL")
+    color = models.CharField(max_length=7, default="#A9A9A9", verbose_name="Цвет жанра", 
+                           help_text="В формате HEX, например: #805AD5")
+    
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
         ordering = ['name']
     
     def __str__(self):
@@ -42,13 +42,21 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.name    
+
 class Article(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     slug = models.SlugField(unique=True, verbose_name="URL")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True, blank=True, 
-                            verbose_name="Жанр игры", 
-                            help_text="Выберите только если категория 'Игры'")
+    
+    genres = models.ManyToManyField(Genre, blank=True, related_name='articles', verbose_name="Жанры игры")
+    game_developer = models.CharField(max_length=200, blank=True, verbose_name="Разработчик игры")
+    game_publisher = models.CharField(max_length=200, blank=True, verbose_name="Издатель игры")
+    game_release_date = models.DateField(null=True, blank=True, verbose_name="Дата выхода игры")
+    game_platforms = models.CharField(max_length=300, blank=True, verbose_name="Платформы (через запятую)")
+    game_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Цена игры")
+    game_store_link = models.URLField(blank=True, verbose_name="Ссылка на магазин")
+    system_requirements = models.TextField(blank=True, verbose_name="Системные требования")
+    
     thumbnail = models.ImageField(
         upload_to='articles/thumbnails/%Y/%m/%d/', 
         blank=True, 
@@ -83,12 +91,15 @@ class Article(models.Model):
         """Возвращает количество комментариев к статье"""
         return self.comments.filter(is_approved=True).count()
     
-    def get_genre_display(self):
-        """Возвращает жанр если категория - Игры"""
-        if self.category and self.category.slug == 'igry' and self.genre:
-            return self.genre
-        return None
+    def is_game(self):
+        """Проверяет, является ли статья игрой"""
+        return self.category and self.category.slug == 'igry'
     
+    def get_platforms_list(self):
+        """Возвращает список платформ"""
+        if self.game_platforms:
+            return [platform.strip() for platform in self.game_platforms.split(',')]
+        return []
 
 class ArticleBlock(models.Model):
     BLOCK_TYPES = [

@@ -143,6 +143,11 @@ def article_detail(request, slug):
     if request.method == 'POST' and article.comments_enabled:
         return _handle_comment_submission(request, article)
     
+    # Определяем какой шаблон использовать
+    template_name = 'news/article_detail.html'
+    if article.is_game():
+        template_name = 'news/game_detail.html'
+    
     # Получаем общий контекст
     context = get_common_context()
     context.update({
@@ -152,7 +157,7 @@ def article_detail(request, slug):
         'comment_form': comment_form,
     })
     
-    return render(request, 'news/article_detail.html', context)
+    return render(request, template_name, context)
 
 def articles_by_genre(request, genre_slug):
     """Показывает игры по определенному жанру"""
@@ -164,7 +169,7 @@ def articles_by_genre(request, genre_slug):
     # Фильтруем статьи: только игры с выбранным жанром
     articles = Article.objects.filter(
         category=games_category,
-        genre=genre,
+        genres=genre,
         is_published=True
     )
     

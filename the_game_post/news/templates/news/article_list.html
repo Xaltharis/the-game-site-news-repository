@@ -35,10 +35,12 @@
                             {% else %}{{ article.category.name }}
                             {% endif %}
                         </span>
-                        {% if article.category.slug == 'igry' and article.genre %}
-                        <a href="{% url 'news:articles_by_genre' article.genre.slug %}" class="hero-article-genre" style="background-color: {{ article.genre.color }}">
-                            {{ article.genre.name }}
-                        </a>
+                        {% if article.is_game %}
+                            {% for genre in article.genres.all %}
+                            <span class="hero-article-genre" style="background-color: {{ genre.color }}">
+                                {{ genre.name }}
+                            </span>
+                            {% endfor %}
                         {% endif %}
                         <span class="hero-article-views">👁 {{ article.views }}</span>
                     </div>
@@ -108,10 +110,12 @@
                         <span class="author">Автор: {{ article.author.username }}</span>
                         <span class="views">👁 {{ article.views }}</span>
                         <span class="comments-count">💬 {{ article.get_comments_count }}</span>
-                        {% if article.category.slug == 'igry' and article.genre %}
-                        <span class="article-genre" style="background-color: {{ article.genre.color }}">
-                            🎮 {{ article.genre.name }}
-                        </span>
+                        {% if article.is_game %}
+                            {% for genre in article.genres.all %}
+                            <a href="{% url 'news:articles_by_genre' genre.slug %}" class="article-genre" style="background-color: {{ genre.color }}">
+                                🎮 {{ genre.name }}
+                            </a>
+                            {% endfor %}
                         {% endif %}
                     </div>
                     

@@ -959,6 +959,247 @@ body {
     font-size: 1.1em;
 }
 
+/* Стили для страницы игры */
+.game-article {
+    background: #1a1a1a;
+    padding: 0;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    overflow: hidden;
+}
+
+.game-header {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    padding: 2.5rem;
+    border-bottom: 2px solid #63b3ed;
+}
+
+.game-hero {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.game-cover {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    border: 2px solid #404040;
+}
+
+.game-cover-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.game-title {
+    color: #e0e0e0;
+    margin: 0 0 1.5rem 0;
+    font-size: 2.5em;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.game-meta-primary {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.game-genre {
+    display: inline-block;
+    padding: 8px 16px;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 0.9em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.game-genre:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.game-stats {
+    display: flex;
+    gap: 1rem;
+    color: #b0b0b0;
+    font-size: 0.9em;
+}
+
+.game-details {
+    margin-bottom: 2rem;
+}
+
+.game-detail {
+    display: flex;
+    margin-bottom: 0.8rem;
+    align-items: center;
+}
+
+.detail-label {
+    color: #63b3ed;
+    font-weight: 600;
+    min-width: 120px;
+    margin-right: 1rem;
+}
+
+.detail-value {
+    color: #e0e0e0;
+    flex-grow: 1;
+}
+
+.platform-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #404040;
+    color: #e0e0e0;
+    border-radius: 15px;
+    font-size: 0.8em;
+    margin-right: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.price {
+    color: #48bb78;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.store-link-container {
+    margin-top: 1.5rem;
+}
+
+.store-link {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.store-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+/* Системные требования */
+.system-requirements {
+    padding: 2rem 2.5rem;
+    background: #2d2d2d;
+    border-bottom: 1px solid #333;
+}
+
+.system-requirements h3 {
+    color: #e0e0e0;
+    margin: 0 0 1rem 0;
+    font-size: 1.4em;
+}
+
+.requirements-content {
+    color: #b0b0b0;
+    line-height: 1.6;
+    background: #1a1a1a;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+/* Контент игры */
+.game-content {
+    padding: 2.5rem;
+}
+
+.game-content h3 {
+    color: #e0e0e0;
+    margin: 0 0 1.5rem 0;
+    font-size: 1.6em;
+}
+
+/* Карточка для игры */
+.game-card {
+    background: #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* Карточка для комментариев */
+.comments-card {
+    background: #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* Убираем старые стили из .game-article и добавляем только отступы */
+.game-article {
+    padding: 0;
+}
+
+.game-header {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    padding: 2.5rem;
+    border-bottom: 2px solid #63b3ed;
+}
+
+.system-requirements {
+    padding: 2rem 2.5rem;
+    background: #2d2d2d;
+    border-bottom: 1px solid #333;
+}
+
+.game-content {
+    padding: 2.5rem;
+}
+
+.comments-section {
+    padding: 2rem;
+}
+
+/* Кнопка назад в шапке статьи/игры */
+.article-actions-top {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 1.5rem 0; /* Добавляем отступы сверху и по бокам */
+    border-bottom: 1px solid #333;
+}
+
+.article-actions-top .back-link {
+    color: #63b3ed;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.article-actions-top .back-link:hover {
+    color: #90cdf4;
+    text-decoration: underline;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
     .container {
@@ -1458,4 +1699,59 @@ body {
     margin-right: 5px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
+}
+
+/* Адаптивность для игрового шаблона */
+@media (max-width: 768px) {
+    .game-hero {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .game-header {
+        padding: 1.5rem;
+    }
+    
+    .game-title {
+        font-size: 2em;
+    }
+    
+    .game-cover {
+        max-width: 250px;
+        margin: 0 auto;
+    }
+    
+    .game-detail {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .detail-label {
+        min-width: auto;
+        margin-bottom: 0.3rem;
+    }
+    
+    .system-requirements,
+    .game-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Адаптивность для карточек */
+@media (max-width: 768px) {
+    .game-header {
+        padding: 1.5rem;
+    }
+    
+    .system-requirements {
+        padding: 1.5rem;
+    }
+    
+    .game-content {
+        padding: 1.5rem;
+    }
+    
+    .comments-section {
+        padding: 1.5rem;
+    }
 }
