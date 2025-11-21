@@ -1701,6 +1701,52 @@ body {
     letter-spacing: 0.3px;
 }
 
+/* Стили для списков */
+.list-block {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+}
+
+.list-block ul {
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.list-block li {
+    margin-bottom: 0.5rem;
+}
+
+/* Стили для цитат */
+.quote-block {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: #2d2d2d;
+    border-left: 4px solid #63b3ed;
+    border-radius: 8px;
+    font-style: italic;
+    color: #b0b0b0;
+}
+
+/* Стили для предупреждений */
+.warning-block {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(245, 101, 101, 0.1);
+    border-left: 4px solid #f56565;
+    border-radius: 8px;
+    color: #f56565;
+}
+
+/* Стили для информационных блоков */
+.info-block {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(56, 161, 105, 0.1);
+    border-left: 4px solid #38a169;
+    border-radius: 8px;
+    color: #38a169;
+}
+
 /* Адаптивность для игрового шаблона */
 @media (max-width: 768px) {
     .game-hero {
