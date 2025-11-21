@@ -1747,6 +1747,57 @@ body {
     color: #38a169;
 }
 
+/* Стили для ссылок на связанные игры */
+.related-game-link {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #2d2d2d;
+    border-radius: 8px;
+    border: 1px solid #404040;
+}
+
+.related-game-label {
+    color: #63b3ed;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.related-game-title {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.related-game-title:hover {
+    color: #63b3ed;
+    text-decoration: underline;
+}
+
+/* Для превью в списках статей */
+.related-game-preview {
+    margin: 0.5rem 0;
+    font-size: 0.9em;
+}
+
+.related-game-link {
+    color: #63b3ed;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.related-game-link:hover {
+    color: #90cdf4;
+    text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .related-game-link {
+        padding: 0.8rem;
+        margin: 0.8rem 0;
+    }
+}
+
 /* Адаптивность для игрового шаблона */
 @media (max-width: 768px) {
     .game-hero {

@@ -13,6 +13,15 @@
             <!-- Заголовок и мета-информация -->
             <header class="article-header">
                 <h1>{{ article.title }}</h1>
+                {% if article.get_related_game_display %}
+                <div class="related-game-link">
+                    <span class="related-game-label">🎮 Статья о игре:</span>
+                    <a href="{% url 'news:article_detail' article.get_related_game_display.slug %}" class="related-game-title">
+                        {{ article.get_related_game_display.title }}
+                    </a>
+                </div>
+                {% endif %}
+                
                 <div class="article-meta">
                     <span class="date">{{ article.created_at|date:"d.m.Y H:i" }}</span>
                     <span class="author">Автор: {{ article.author.username }}</span>

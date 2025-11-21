@@ -43,13 +43,13 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'category', 'display_genres', 'created_at', 'views', 'is_published', 'comments_enabled', 'display_tags')
+    list_display = ('title', 'author', 'category', 'related_game', 'display_genres', 'created_at', 'views', 'is_published', 'comments_enabled', 'display_tags')
     list_filter = ('is_published', 'created_at', 'author', 'tags', 'comments_enabled', 'category', 'genres')
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [ArticleBlockInline, CommentInline]
     readonly_fields = ('views',)
-    filter_horizontal = ('tags', 'genres')  # Добавляем жанры в filter_horizontal
+    filter_horizontal = ('tags', 'genres')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -58,7 +58,7 @@ class ArticleAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'slug', 'category', 'thumbnail', 'author', 'is_published')
+            'fields': ('title', 'slug', 'category', 'thumbnail', 'author', 'is_published', 'related_game')
         }),
         ('Информация об игре (только для категории "Игры")', {
             'fields': ('genres', 'game_developer', 'game_publisher', 'game_release_date', 

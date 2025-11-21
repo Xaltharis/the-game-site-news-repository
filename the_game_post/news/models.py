@@ -47,7 +47,15 @@ class Article(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
     slug = models.SlugField(unique=True, verbose_name="URL")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория")
-    
+    related_game = models.ForeignKey(
+        'self', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        limit_choices_to={'category__slug': 'igry'},  # Только игры
+        verbose_name="Связанная игра",
+        help_text="Выберите игру, если статья/новость о ней"
+    )
     genres = models.ManyToManyField(Genre, blank=True, related_name='articles', verbose_name="Жанры игры")
     game_developer = models.CharField(max_length=200, blank=True, verbose_name="Разработчик игры")
     game_publisher = models.CharField(max_length=200, blank=True, verbose_name="Издатель игры")
@@ -100,6 +108,12 @@ class Article(models.Model):
         if self.game_platforms:
             return [platform.strip() for platform in self.game_platforms.split(',')]
         return []
+    
+    def get_related_game_display(self):
+        """Возвращает связанную игру если она есть"""
+        if self.related_game and self.related_game.is_published:
+            return self.related_game
+        return None
 
 class ArticleBlock(models.Model):
     BLOCK_TYPES = [
