@@ -105,6 +105,10 @@ class ArticleBlock(models.Model):
     BLOCK_TYPES = [
         ('text', 'Текст'),
         ('image', 'Изображение'),
+        ('list', 'Список'),          
+        ('quote', 'Цитата'),          
+        ('warning', 'Предупреждение'), 
+        ('info', 'Информация'),       
     ]
     
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='blocks', verbose_name="Статья")

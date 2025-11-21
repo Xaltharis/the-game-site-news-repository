@@ -41,13 +41,33 @@
                         <div class="text-block">
                             {{ block.content|linebreaks }}
                         </div>
-                    
+    
                     {% elif block.block_type == 'image' and block.image %}
                         <div class="image-block">
                             <img src="{{ block.image.url }}" alt="{{ block.image_caption }}" class="article-image">
                             {% if block.image_caption %}
                                 <p class="image-caption">{{ block.image_caption }}</p>
                             {% endif %}
+                        </div>
+    
+                    {% elif block.block_type == 'list' %}
+                        <div class="list-block">
+                            {{ block.content|linebreaks }}
+                        </div>
+    
+                    {% elif block.block_type == 'quote' %}
+                        <div class="quote-block">
+                            {{ block.content|linebreaks }}
+                        </div>
+    
+                    {% elif block.block_type == 'warning' %}
+                        <div class="warning-block">
+                            {{ block.content|linebreaks }}
+                        </div>
+    
+                    {% elif block.block_type == 'info' %}
+                        <div class="info-block">
+                            {{ block.content|linebreaks }}
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -96,7 +116,7 @@
         <!-- Популярные статьи -->
         {% if popular_articles %}
         <div class="popular-articles">
-            <h3>Самые читаемые</h3>
+            <h3>Популярно сейчас:</h3>
             <div class="popular-list">
                 {% for popular in popular_articles %}
                 <div class="popular-item">

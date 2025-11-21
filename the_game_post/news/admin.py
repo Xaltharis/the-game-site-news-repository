@@ -27,7 +27,7 @@ class GenreAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     
     def article_count(self, obj):
-        return obj.article_set.count()
+        return obj.articles.count()
     article_count.short_description = 'Количество статей'
 
 @admin.register(Tag)
